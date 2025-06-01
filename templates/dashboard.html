@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Sécurité Nationale - Surveillance IP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .video-feed {
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      border: 3px solid #1e40af;
+      transition: all 0.3s ease;
+    }
+    .video-feed:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 30px rgba(30, 64, 175, 0.5);
+    }
+    .security-gradient {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
+    }
+    .input-glow:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    }
+    .btn-security {
+      background: linear-gradient(to right, #1e40af, #3b82f6);
+      transition: all 0.3s ease;
+    }
+    .btn-security:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+    .btn-alert {
+      background: linear-gradient(to right, #dc2626, #ef4444);
+      transition: all 0.3s ease;
+    }
+    .btn-alert:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <!-- Header Sécurité -->
+  <header class="security-gradient text-white shadow-lg">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+          <i class="fas fa-shield-alt text-3xl"></i>
+          <div>
+            <h1 class="text-2xl font-bold">OCULUS DEMO</h1>
+            <p class="text-sm opacity-80">Système de Surveillance Intérieure</p>
+          </div>
+        </div>
+        <div class="hidden md:flex items-center space-x-4">
+          <span class="text-sm"><i class="fas fa-user-shield mr-2"></i>Agent: <span class="font-semibold">DEMO</span></span>
+          <span class="text-sm"><i class="fas fa-clock mr-2"></i><span id="datetime"></span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <!-- Panel de Contrôle -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center">
+          <h2 class="text-xl font-bold"><i class="fas fa-video mr-3"></i>CONTRÔLE CAMÉRA IP</h2>
+          <span class="text-xs bg-blue-500 px-3 py-1 rounded-full">SURVEILLANCE ACTIVE</span>
+        </div>
+        
+        <div class="p-6">
+          <!-- Formulaire de connexion -->
+          <form id="camera-form" class="mb-8">
+            <div class="flex flex-col md:flex-row gap-4">
+              <div class="flex-grow relative">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <i class="fas fa-link text-gray-400"></i>
+                </div>
+                <input type="text" id="ip-url" 
+                       class="input-glow w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                       placeholder="Ex: http://192.168.1.50:8080/video" required>
+              </div>
+              <button type="submit" class="btn-security text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center">
+                <i class="fas fa-plug mr-2"></i> CONNECTER
+              </button>
+            </div>
+          </form>
+          
+          <!-- Flux Vidéo -->
+          <div id="video-container" class="relative">
+            <div class="aspect-w-16 aspect-h-9 bg-black rounded-xl overflow-hidden video-feed">
+              <img id="video-feed" src="" alt="Flux de surveillance en direct" class="w-full h-full object-cover hidden">
+            </div>
+            <div id="no-feed" class="absolute inset-0 flex items-center justify-center bg-gray-900 rounded-xl">
+              <div class="text-center p-6">
+                <i class="fas fa-video-slash text-4xl text-gray-500 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-300">AUCUN FLUX VIDÉO</h3>
+                <p class="text-gray-400 mt-2">Connectez une caméra IP pour démarrer la surveillance</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Actions Rapides -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <a href="/suivi" class="btn-alert text-white font-bold py-4 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-3">
+          <i class="fas fa-user-secret text-xl"></i>
+          <span>INDIVIDUS DÉTECTÉS <span class="bg-white text-red-600 text-xs font-bold px-2 py-1 rounded-full ml-2">3 ALERTES</span></span>
+        </a>
+        
+        <button class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-4 px-6 rounded-lg shadow-lg flex items-center justify-center space-x-3 transition-all">
+          <i class="fas fa-history text-xl"></i>
+          <span>HISTORIQUE DES ALERTES</span>
+        </button>
+      </div>
+      
+      <!-- Statut du Système -->
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-gray-800 text-white px-6 py-4">
+          <h2 class="text-xl font-bold"><i class="fas fa-server mr-3"></i>STATUT DU SYSTÈME</h2>
+        </div>
+        <div class="p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+            <div class="flex items-center space-x-3">
+              <div class="bg-blue-100 p-3 rounded-full">
+                <i class="fas fa-video text-blue-600"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Caméras actives</p>
+                <p class="font-bold">70/856</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-green-50 p-4 rounded-lg border border-green-100">
+            <div class="flex items-center space-x-3">
+              <div class="bg-green-100 p-3 rounded-full">
+                <i class="fas fa-microchip text-green-600"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">CPU</p>
+                <p class="font-bold">16%</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-purple-50 p-4 rounded-lg border border-purple-100">
+            <div class="flex items-center space-x-3">
+              <div class="bg-purple-100 p-3 rounded-full">
+                <i class="fas fa-memory text-purple-600"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Mémoire</p>
+                <p class="font-bold">3.2/8120GB</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+            <div class="flex items-center space-x-3">
+              <div class="bg-yellow-100 p-3 rounded-full">
+                <i class="fas fa-bolt text-yellow-600"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Uptime</p>
+                <p class="font-bold">12h 45m</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <p class="text-sm opacity-80"><i class="fas fa-shield-alt mr-2"></i> Système de Sécurité Intérieure - Classification: CONFIDENTIEL</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="#" class="text-sm opacity-80 hover:opacity-100"><i class="fas fa-lock mr-1"></i> Sécurité</a>
+          <a href="#" class="text-sm opacity-80 hover:opacity-100"><i class="fas fa-question-circle mr-1"></i> Aide</a>
+          <a href="#" class="text-sm opacity-80 hover:opacity-100"><i class="fas fa-sign-out-alt mr-1"></i> Déconnexion</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mise à jour de la date et heure
+    function updateDateTime() {
+      const now = new Date();
+      const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit',
+        second: '2-digit'
+      };
+      document.getElementById('datetime').textContent = now.toLocaleDateString('fr-FR', options);
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // Gestion du flux vidéo
+    const form = document.getElementById('camera-form');
+    const img = document.getElementById('video-feed');
+    const noFeed = document.getElementById('no-feed');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const ipUrl = document.getElementById('ip-url').value;
+      
+      // Afficher l'état de connexion
+      noFeed.innerHTML = `
+        <div class="text-center p-6">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <h3 class="text-xl font-semibold text-gray-300">CONNEXION EN COURS</h3>
+          <p class="text-gray-400 mt-2">Connexion à ${ipUrl}</p>
+        </div>
+      `;
+
+      // Envoie l'URL de la caméra au backend
+      try {
+        const res = await fetch('/start_camera', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: ipUrl })
+        });
+
+        if (res.ok) {
+          img.src = '/video_feed';
+          img.style.display = 'block';
+          noFeed.style.display = 'none';
+          
+          // Ajouter un effet de flash pour indiquer la connexion réussie
+          document.getElementById('video-container').classList.add('animate-pulse');
+          setTimeout(() => {
+            document.getElementById('video-container').classList.remove('animate-pulse');
+          }, 2000);
+        } else {
+          throw new Error("Erreur de connexion");
+        }
+      } catch (error) {
+        noFeed.innerHTML = `
+          <div class="text-center p-6">
+            <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-300">ERREUR DE CONNEXION</h3>
+            <p class="text-gray-400 mt-2">${error.message || "Impossible de se connecter à la caméra"}</p>
+            <button onclick="location.reload()" class="mt-4 text-sm bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+              <i class="fas fa-sync-alt mr-2"></i> Réessayer
+            </button>
+          </div>
+        `;
+        img.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
