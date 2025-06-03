@@ -14,7 +14,7 @@ camera_url = ""
 # --- Connexion à la base ---
 def get_known_faces():
     conn = mysql.connector.connect(
-        host="mysql.railway.internal", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway"
+        host="mainline.proxy.rlwy.net", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway" , port=37978
     )
     cursor = conn.cursor()
     cursor.execute("SELECT nom, image FROM visages")
@@ -44,7 +44,7 @@ def enregistrer_detection(nom, frame):
         img_blob = img_encoded.tobytes()
 
         conn = mysql.connector.connect(
-           host="mysql.railway.internal", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway"
+           host="mainline.proxy.rlwy.net", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway" , port=37978
         )
         cursor = conn.cursor()
         cursor.execute(
@@ -130,7 +130,7 @@ def dashboard():
 @app.route('/suivi')
 def suivi():
     conn = mysql.connector.connect(
-        host="mysql.railway.internal", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway"
+        host="mainline.proxy.rlwy.net", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway" , port=37978
     )
     cursor = conn.cursor()
     cursor.execute("SELECT nom, image, date_detection FROM journal_detection ORDER BY date_detection DESC")
