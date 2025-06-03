@@ -5,6 +5,7 @@ import numpy as np
 import mysql.connector
 import datetime
 import base64
+import os
 
 app = Flask(__name__)
 video_capture = None
@@ -43,7 +44,7 @@ def enregistrer_detection(nom, frame):
         img_blob = img_encoded.tobytes()
 
         conn = mysql.connector.connect(
-            host="localhost", user="root", password="", database="rc_facial"
+            host="sql7.freesqldatabase.com", user="sql7782525", password="r53n9yksqp", database="sql7782525"
         )
         cursor = conn.cursor()
         cursor.execute(
@@ -129,7 +130,7 @@ def dashboard():
 @app.route('/suivi')
 def suivi():
     conn = mysql.connector.connect(
-        host="localhost", user="root", password="", database="rc_facial"
+       host="sql7.freesqldatabase.com", user="sql7782525", password="r53n9yksqp", database="sql7782525"
     )
     cursor = conn.cursor()
     cursor.execute("SELECT nom, image, date_detection FROM journal_detection ORDER BY date_detection DESC")
@@ -149,5 +150,7 @@ def suivi():
     return render_template('suivi.html', detections=detections)
 
 # --- Lancer serveur ---
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

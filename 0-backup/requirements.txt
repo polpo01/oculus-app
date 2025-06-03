@@ -1,4 +1,0 @@
-flask
-opencv-python
-face_recognition
-flask_cors
