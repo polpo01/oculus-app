@@ -153,10 +153,10 @@ def suivi():
 
 
 if __name__ == "__main__":
+    port_env = os.environ.get("PORT")
     try:
-        port = int(os.environ.get("PORT", 5000))
-    except (ValueError, TypeError):
+        port = int(port_env)
+    except (TypeError, ValueError):
         port = 5000
-
     app.run(host="0.0.0.0", port=port)
 
