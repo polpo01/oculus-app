@@ -14,7 +14,7 @@ camera_url = ""
 # --- Connexion à la base ---
 def get_known_faces():
     conn = mysql.connector.connect(
-        host="sql7.freesqldatabase.com", user="sql7782525", password="r53n9yksqp", database="sql7782525"
+        host="mysql.railway.internal", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway"
     )
     cursor = conn.cursor()
     cursor.execute("SELECT nom, image FROM visages")
@@ -44,7 +44,7 @@ def enregistrer_detection(nom, frame):
         img_blob = img_encoded.tobytes()
 
         conn = mysql.connector.connect(
-            host="sql7.freesqldatabase.com", user="sql7782525", password="r53n9yksqp", database="sql7782525"
+           host="mysql.railway.internal", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway"
         )
         cursor = conn.cursor()
         cursor.execute(
@@ -130,7 +130,7 @@ def dashboard():
 @app.route('/suivi')
 def suivi():
     conn = mysql.connector.connect(
-       host="sql7.freesqldatabase.com", user="sql7782525", password="r53n9yksqp", database="sql7782525"
+        host="mysql.railway.internal", user="root", password="gEhDoQVyDBPAQdkPKRplGXIjJOLJMzKI", database="railway"
     )
     cursor = conn.cursor()
     cursor.execute("SELECT nom, image, date_detection FROM journal_detection ORDER BY date_detection DESC")
@@ -158,6 +158,3 @@ if __name__ == "__main__":
     except (ValueError, TypeError):
         port = 5000
     app.run(host="0.0.0.0", port=port)
-
-
-
