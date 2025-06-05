@@ -1,5 +1,5 @@
-# Utilise une image Python complète
-FROM python:3.10-slim
+# Utilise une image Python complète (NB/cette ligne est soulignée en jaune sur mon vscode)
+FROM python:3.10-slim       
 
 # Installation des dépendances système nécessaires pour face_recognition et OpenCV
 RUN apt-get update && apt-get install -y \
@@ -27,5 +27,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Lancement de l'application via Gunicorn
-CMD ["python", "app.py"]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8000"]
 
