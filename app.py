@@ -65,17 +65,14 @@ def index():
 # --- Lancement caméra IP ---
 @app.route('/start_camera', methods=['POST'])
 def start_camera():
-    try:
-        # Forcer Flask à lire le JSON même si le header est modifié par Railway
-        data = request.get_json(force=True)
-        camera_url = data["url"]
-        
-        # Ton traitement ici (par exemple démarrer le flux avec OpenCV)
-        print(f"Connexion à la caméra : {camera_url}")
+    global video_capture, camera_url
+    data = request.get_json()
+    camera_url = data.get("url")
+    video_capture = cv2.VideoCapture(camera_url)
+    if not video_capture.isOpened():
+        return jsonify({'error': 'Impossible d’ouvrir la caméra'}), 400
+    return jsonify({'message': 'Caméra connectée'}), 200
 
-        return jsonify({"status": "ok"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 # --- Génération du flux vidéo ---
 def gen_frames():
